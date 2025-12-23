@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
       },
       include: {
         likes: {
-          where: session ? { userId: parseInt(session.user.id) } : {},
+          where: session ? { userId: session.user.id } : {},
         },
       },
     });
