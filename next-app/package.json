@@ -41,6 +41,6 @@
     "prisma": "5",
     "tailwindcss": "^4.1.18",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "5.3.3"
   }
 }
