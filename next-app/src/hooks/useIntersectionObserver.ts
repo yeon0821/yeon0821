@@ -1,30 +1,30 @@
 import { RefObject, useState, useEffect } from "react";
 
 function useIntersectionObserver(
-  elementRef: RefObject<Element>,
-  { threshold = 0.1, root = null, rootMargin = "0%" }
+  elementRef: RefObject<Element | null>,
+  {
+    threshold = 0.1,
+    root = null,
+    rootMargin = "0%",
+  }: IntersectionObserverInit = {}
 ) {
-  const [entry, setEntry] = useState<IntersectionObserverEntry>();
-
-  const updateEntry = ([entry]: IntersectionObserverEntry[]): void => {
-    setEntry(entry);
-  };
+  const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
 
   useEffect(() => {
-    const node = elementRef?.current;
-    const hasIOSupport = !!window.IntersectionObserver;
+    const node = elementRef.current;
 
-    if (!node || !hasIOSupport) return;
+    if (!node) return;
+    if (!("IntersectionObserver" in window)) return;
 
-    const observerParams = { threshold, root, rootMargin };
-    const observer = new IntersectionObserver(updateEntry, observerParams);
+    const observer = new IntersectionObserver(
+      ([entry]) => setEntry(entry),
+      { threshold, root, rootMargin }
+    );
 
     observer.observe(node);
 
     return () => observer.disconnect();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elementRef?.current, root, rootMargin, JSON.stringify(threshold)]);
+  }, [elementRef, threshold, root, rootMargin]);
 
   return entry;
 }
